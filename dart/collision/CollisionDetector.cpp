@@ -190,6 +190,21 @@ bool CollisionDetector::detectCollision(dynamics::BodyNode* _node1,
                          _calculateContactPoints);
 }
 
+// Jiaji: Add an interface for distance query between two bodies.
+DistancePair CollisionDetector::computeDistancePair(dynamics::BodyNode* _node1, 
+						    dynamics::BodyNode* _node2) {
+  return computeDistancePair(getCollisionNode(_node1),
+			     getCollisionNode(_node2));
+}
+
+DistancePair CollisionDetector::computeDistancePair(CollisionNode* _node1, 
+						    CollisionNode* _node2) {
+  DistancePair tmp;
+  return tmp;
+}
+//--------------
+
+
 size_t CollisionDetector::getNumContacts() {
   return mContacts.size();
 }

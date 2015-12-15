@@ -48,7 +48,18 @@
 
 namespace dart {
 namespace collision {
+// Jiaji: DistancePair information among two bodies.
+struct DistancePair {
+  Eigen::Vector3d point1;
+  Eigen::Vector3d point2;
+  double distance;
+  /// First body node
+  dynamics::WeakBodyNodePtr bodyNode1;
 
+  /// Second body node
+  dynamics::WeakBodyNodePtr bodyNode2;  
+};
+// ---------------------
 /// Contact information
 struct Contact {
   // To get byte-aligned Eigen vectors
@@ -142,6 +153,11 @@ public:
   /// \param[in] _calculateContactPoints True to get contact points
   bool detectCollision(dynamics::BodyNode* _node1, dynamics::BodyNode* _node2,
                        bool _calculateContactPoints);
+
+  /// Jiaji: Add an interface for distance query between two bodies.
+  DistancePair computeDistancePair(dynamics::BodyNode* _node1, dynamics::BodyNode* _node2);
+  virtual DistancePair computeDistancePair(CollisionNode* _node1, CollisionNode* _node2); 
+  /// --------
 
   /// \brief
   size_t getNumContacts();

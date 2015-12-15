@@ -69,7 +69,10 @@ public:
   // Documentation inherited
   virtual bool detectCollision(CollisionNode* _node1, CollisionNode* _node2,
                                bool _calculateContactPoints);
-
+  
+  /// Jiaji: Add an interface for distance query between two bodies.
+  virtual DistancePair computeDistancePair(CollisionNode* _node1, CollisionNode* _node2); 
+  /// --------  
   ///
   void draw();
 };

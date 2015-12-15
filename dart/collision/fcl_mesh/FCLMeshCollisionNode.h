@@ -43,6 +43,7 @@
 #include <assimp/mesh.h>
 #include <Eigen/Dense>
 #include <fcl/collision.h>
+#include <fcl/distance.h>
 #include <fcl/BVH/BVH_model.h>
 
 #include "dart/collision/CollisionNode.h"
@@ -84,6 +85,11 @@ public:
   virtual bool detectCollision(FCLMeshCollisionNode* _otherNode,
                                std::vector<Contact>* _contactPoints,
                                int _max_num_contact);
+
+  /// Jiaji: Add an interface for distance query between two bodies.
+  DistancePair computeDistancePair(FCLMeshCollisionNode* _otherNode); 
+  /// --------  
+
   ///
   void updateShape();
 

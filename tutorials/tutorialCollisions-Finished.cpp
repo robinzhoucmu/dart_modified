@@ -519,8 +519,8 @@ SkeletonPtr createBall()
   SkeletonPtr ball = Skeleton::create("rigid_ball");
 
   // Give the ball a body
-  addRigidBody<FreeJoint>(ball, "rigid ball", Shape::ELLIPSOID);
-
+  //addRigidBody<FreeJoint>(ball, "rigid ball", Shape::ELLIPSOID);
+  addRigidBody<FreeJoint>(ball, "rigid ball", Shape::BOX);
   setAllColors(ball, dart::Color::Red());
 
   return ball;

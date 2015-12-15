@@ -92,7 +92,6 @@ bool collisionCallBack(fcl::CollisionObject* _o1,
 
   // Perform narrow-phase detection
   fcl::collide(_o1, _o2, request, result);
-
   if (!request.enable_cost
       && (result.isCollision())
       && (result.numContacts() >= request.num_max_contacts))

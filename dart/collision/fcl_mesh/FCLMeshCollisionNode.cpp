@@ -39,6 +39,7 @@
 
 #include <iostream>
 #include <vector>
+#include <limits>
 
 #include <fcl/shape/geometric_shapes.h>
 #include <fcl/shape/geometric_shape_to_BVH_model.h>
@@ -155,7 +156,9 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
   evalRT();
   _otherNode->evalRT();
   bool collision = false;
-
+  // Jiaji: Test code for distance computation.
+  double min_dist = 1e9;
+  // ------
   for (size_t i = 0; i < mMeshes.size(); i++)
   {
     for (size_t j = 0; j < _otherNode->mMeshes.size(); j++)
@@ -172,7 +175,69 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
                    _otherNode->mMeshes[j],
                    _otherNode->mFclWorldTrans,
                    req, res);
-
+      // ---------------------------------------
+      // Jiaji: Test code for distance computation.
+      fcl::DistanceRequest dis_req;
+      dis_req.enable_nearest_points = true;
+      fcl::DistanceResult dis_res;
+      fcl::distance(mMeshes[i],
+                    mFclWorldTrans,
+                    _otherNode->mMeshes[j],
+                    _otherNode->mFclWorldTrans,
+		    dis_req, dis_res);
+      std::cout <<"collision distance : " << i << "," << j <<" " << dis_res.min_distance << std::endl;
+      if (dis_res.min_distance < min_dist) {
+	min_dist = dis_res.min_distance;
+	std::cout << dis_res.nearest_points[0] << std::endl;
+	const fcl::Vec3f& pt_1 = dis_res.nearest_points[0];
+	const fcl::Vec3f& pt_2 = dis_res.nearest_points[1];
+	Eigen::Vector3d pt_a(pt_1[0], pt_1[1], pt_1[2]);
+	Eigen::Vector3d pt_b(pt_2[0], pt_2[1], pt_2[2]);
+	std::cout << pt_a << std::endl;
+	std::cout << pt_b << std::endl;
+	
+	// Try another the hack. Move the mesh_1 by the vec of pt_2 -pt_1, ask collision detector for a surface normal.
+	fcl::Transform3f new_tf_1 = mFclWorldTrans;
+	new_tf_1.setTranslation(mFclWorldTrans.getTranslation() + (pt_2 - pt_1));
+	fcl::CollisionResult new_col_res;
+ 
+	fcl::collide(mMeshes[i],
+		     new_tf_1,
+		     _otherNode->mMeshes[j],
+		     _otherNode->mFclWorldTrans,
+		     req, new_col_res);
+	// Try to hack into extracting normal outof the meshes.
+	// Failed: mesh id is not correct? Multiple mesh problem.
+	// For the wall and floor, it gave me the vertical mesh 
+	// from the wall instead. 
+	/*
+	fcl::BVHModel<fcl::OBBRSS>* _mesh2 = _otherNode->mMeshes[j];
+	const fcl::Transform3f& _transform2 = _otherNode->mFclWorldTrans;
+	int id2 = dis_res.b2;
+	fcl::Triangle tri2 = _mesh2->tri_indices[id2];
+	fcl::Vec3f p1, p2, p3;
+	p1 = _mesh2->vertices[tri2[0]];
+	p2 = _mesh2->vertices[tri2[1]];
+	p3 = _mesh2->vertices[tri2[2]];
+	fcl::Vec3f contact2;
+	p1 = _transform2.transform(p1);
+	p2 = _transform2.transform(p2);
+	p3 = _transform2.transform(p3);
+	std::cout << p1 << "|" << p2 << "|" << p3 << std::endl;
+	std::cout << "surface normal " << ((p2 - p1).cross(p3-p1)).normalize() << std::endl;
+	*/
+	std::cout << "NumContactOld " << res.numContacts() << std::endl; 
+	int num_contacts = new_col_res.numContacts();
+	if (num_contacts > 0) {
+	  std::cout << "Normal 0 :" << -new_col_res.getContact(0).normal << std::endl;
+	  std::cout << "Normal end :" << -new_col_res.getContact(num_contacts - 1).normal << std::endl;
+	}
+	math::Jacobian J_b = _otherNode->getBodyNode()->getWorldJacobian(pt_b);
+	std::cout << J_b << std::endl;
+	//std::cout << "Linear Jacobian " << std::endl;
+	
+      }
+      //--------
       if (res.isCollision())
         collision = true;
 
@@ -214,7 +279,14 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
                                 _otherNode->mMeshes[j],
                                 mFclWorldTrans, _otherNode->mFclWorldTrans,
                                 &pair1.point, &pair2.point);
-        if (contactResult == COPLANAR_CONTACT)
+        /* Jiaji:debugging.
+	const fcl::Contact& fclContact = res.getContact(k);
+	std::cout << "Contact " << k << std::endl;
+	
+	std::cout << pair1.point << " ;;; " << pair2.point << std::endl;
+	std::cout << "Normal " <<  -res.getContact(k).normal << std::endl;
+	// ------------------*/
+	if (contactResult == COPLANAR_CONTACT)
         {
           numCoplanarContacts++;
           //                if (numContacts != 0 || numCoplanarContacts > 1)
@@ -298,8 +370,50 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
       }
     }
   }
+  // Jiaji: Dart distance test.
+  std::cout << getBodyNode()->getSkeleton()->getName() << std::endl;
+  std::cout << _otherNode->getBodyNode()->getSkeleton()->getName() << std::endl;
+  std::cout << "MinDist: " << min_dist << std::endl;
+  // ------------------
   return collision;
 }
+
+//===========================================================================
+// Jiaji: Add an interface for distance query between two bodies.
+DistancePair FCLMeshCollisionNode::computeDistancePair(FCLMeshCollisionNode* _otherNode) {
+  DistancePair dist_pair;
+  double min_dist = std::numeric_limits<double>::max();
+  Eigen::Vector3d pt_a;
+  Eigen::Vector3d pt_b;
+  for (size_t i = 0; i < mMeshes.size(); i++)
+  {
+    for (size_t j = 0; j < _otherNode->mMeshes.size(); j++)
+    {
+      // Set up distance request.
+      fcl::DistanceRequest dis_req;
+      dis_req.enable_nearest_points = true;
+      fcl::DistanceResult dis_res;
+      fcl::distance(mMeshes[i],
+                    mFclWorldTrans,
+                    _otherNode->mMeshes[j],
+                    _otherNode->mFclWorldTrans,
+		    dis_req, dis_res);
+      if (dis_res.min_distance < min_dist) {
+	min_dist = dis_res.min_distance;
+	const fcl::Vec3f& pt_1 = dis_res.nearest_points[0];
+	const fcl::Vec3f& pt_2 = dis_res.nearest_points[1];
+	pt_a = Eigen::Vector3d(pt_1[0], pt_1[1], pt_1[2]);
+	pt_b = Eigen::Vector3d(pt_2[0], pt_2[1], pt_2[2]);
+      }
+    }
+  }
+  dist_pair.distance = min_dist;
+  dist_pair.point1 = pt_a;
+  dist_pair.point2 = pt_b;
+  dist_pair.bodyNode1 = this->getBodyNode();
+  dist_pair.bodyNode2 = _otherNode->getBodyNode();
+  return dist_pair;
+} 
 
 //==============================================================================
 void FCLMeshCollisionNode::updateShape()

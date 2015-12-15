@@ -473,8 +473,11 @@ SkeletonPtr createManipulator()
 {
   // Load the Skeleton from a file
   dart::utils::DartLoader loader;
+  loader.addPackageDirectory("abb_common","/home/jiaji/swri-ros-pkg/abb/abb_common");
   SkeletonPtr manipulator =
-      loader.parseSkeleton(DART_DATA_PATH"urdf/KR5/KR5 sixx R650.urdf");
+  loader.parseSkeleton("/home/jiaji/swri-ros-pkg/abb/abb_common/urdf/irb_120.urdf");
+  //SkeletonPtr manipulator =
+  //  loader.parseSkeleton(DART_DATA_PATH"urdf/KR5/KR5 sixx R650.urdf");
   manipulator->setName("manipulator");
 
   // Position its base in a reasonable way

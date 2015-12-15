@@ -1,7 +1,7 @@
 file(GLOB tutorials_src "*.cpp")
 list(SORT tutorials_src)
-
-message(STATUS "")
+find_package(dart)
+message(STATUS "${dart}")
 message(STATUS "[ Tutorials ]")
 
 foreach(tutorial ${tutorials_src})
