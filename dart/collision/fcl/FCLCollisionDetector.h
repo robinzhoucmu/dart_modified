@@ -80,6 +80,9 @@ protected:
   virtual bool detectCollision(CollisionNode* _node1, CollisionNode* _node2,
                                bool _calculateContactPoints) override;
 
+  // Jiaji: Adding this but not implemented (merely for the sake of compiling). 
+  virtual DistancePair computeDistancePair(CollisionNode* _node1, CollisionNode* _node2);
+
   /// Broad-phase collision checker of FCL
   fcl::DynamicAABBTreeCollisionManager* mBroadPhaseAlg;
 };

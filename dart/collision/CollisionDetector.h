@@ -156,7 +156,6 @@ public:
 
   /// Jiaji: Add an interface for distance query between two bodies.
   DistancePair computeDistancePair(dynamics::BodyNode* _node1, dynamics::BodyNode* _node2);
-  virtual DistancePair computeDistancePair(CollisionNode* _node1, CollisionNode* _node2); 
   /// --------
 
   /// \brief
@@ -182,6 +181,9 @@ protected:
   virtual bool detectCollision(CollisionNode* _node1, CollisionNode* _node2,
                                bool _calculateContactPoints) = 0;
 
+  // Jiaji: factory pattern, only FCLMeshCollisionNode is implemented.
+  virtual DistancePair computeDistancePair(CollisionNode* _node1, CollisionNode* _node2) = 0; 
+ 
   /// \brief
   std::vector<Contact> mContacts;
 

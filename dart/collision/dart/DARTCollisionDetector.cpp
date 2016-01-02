@@ -158,5 +158,12 @@ bool DARTCollisionDetector::detectCollision(CollisionNode* _collNode1,
   return contacts.size() > 0 ? true : false;
 }
 
+DistancePair DARTCollisionDetector::computeDistancePair(CollisionNode* _node1, CollisionNode* _node2) {
+  // TODO(Jiaji): function not implemented.
+  DistancePair tmp;
+  return tmp;
+}
+
+
 }  // namespace collision
 }  // namespace dart

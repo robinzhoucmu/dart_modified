@@ -185,16 +185,16 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
                     _otherNode->mMeshes[j],
                     _otherNode->mFclWorldTrans,
 		    dis_req, dis_res);
-      std::cout <<"collision distance : " << i << "," << j <<" " << dis_res.min_distance << std::endl;
+      //std::cout <<"collision distance : " << i << "," << j <<" " << dis_res.min_distance << std::endl;
       if (dis_res.min_distance < min_dist) {
 	min_dist = dis_res.min_distance;
-	std::cout << dis_res.nearest_points[0] << std::endl;
+	//std::cout << dis_res.nearest_points[0] << std::endl;
 	const fcl::Vec3f& pt_1 = dis_res.nearest_points[0];
 	const fcl::Vec3f& pt_2 = dis_res.nearest_points[1];
 	Eigen::Vector3d pt_a(pt_1[0], pt_1[1], pt_1[2]);
 	Eigen::Vector3d pt_b(pt_2[0], pt_2[1], pt_2[2]);
-	std::cout << pt_a << std::endl;
-	std::cout << pt_b << std::endl;
+	//std::cout << pt_a << std::endl;
+	//std::cout << pt_b << std::endl;
 	
 	// Try another the hack. Move the mesh_1 by the vec of pt_2 -pt_1, ask collision detector for a surface normal.
 	fcl::Transform3f new_tf_1 = mFclWorldTrans;
@@ -233,7 +233,7 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
 	  std::cout << "Normal end :" << -new_col_res.getContact(num_contacts - 1).normal << std::endl;
 	}
 	math::Jacobian J_b = _otherNode->getBodyNode()->getWorldJacobian(pt_b);
-	std::cout << J_b << std::endl;
+	//std::cout << J_b << std::endl;
 	//std::cout << "Linear Jacobian " << std::endl;
 	
       }
@@ -381,6 +381,9 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
 //===========================================================================
 // Jiaji: Add an interface for distance query between two bodies.
 DistancePair FCLMeshCollisionNode::computeDistancePair(FCLMeshCollisionNode* _otherNode) {
+  
+   evalRT();
+  _otherNode->evalRT();
   DistancePair dist_pair;
   double min_dist = std::numeric_limits<double>::max();
   Eigen::Vector3d pt_a;
@@ -393,12 +396,14 @@ DistancePair FCLMeshCollisionNode::computeDistancePair(FCLMeshCollisionNode* _ot
       fcl::DistanceRequest dis_req;
       dis_req.enable_nearest_points = true;
       fcl::DistanceResult dis_res;
+      //std::cout << "fcl distance " << std::endl;
       fcl::distance(mMeshes[i],
                     mFclWorldTrans,
                     _otherNode->mMeshes[j],
                     _otherNode->mFclWorldTrans,
 		    dis_req, dis_res);
       if (dis_res.min_distance < min_dist) {
+	//std::cout << dis_res.min_distance << std::endl;
 	min_dist = dis_res.min_distance;
 	const fcl::Vec3f& pt_1 = dis_res.nearest_points[0];
 	const fcl::Vec3f& pt_2 = dis_res.nearest_points[1];

@@ -196,12 +196,13 @@ DistancePair CollisionDetector::computeDistancePair(dynamics::BodyNode* _node1,
   return computeDistancePair(getCollisionNode(_node1),
 			     getCollisionNode(_node2));
 }
-
+  /*
 DistancePair CollisionDetector::computeDistancePair(CollisionNode* _node1, 
 						    CollisionNode* _node2) {
   DistancePair tmp;
   return tmp;
 }
+  */
 //--------------
 
 

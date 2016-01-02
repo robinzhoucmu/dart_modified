@@ -229,6 +229,13 @@ bool FCLCollisionDetector::detectCollision(CollisionNode* _node1,
 }
 
 //==============================================================================
+DistancePair FCLCollisionDetector::computeDistancePair(CollisionNode* _node1, CollisionNode* _node2) {
+  // TODO(Jiaji): function not implemented.
+  DistancePair tmp;
+  return tmp;
+}
+
+//==============================================================================
 CollisionNode* FCLCollisionDetector::findCollisionNode(
     const fcl::CollisionGeometry* _fclCollGeom) const
 {

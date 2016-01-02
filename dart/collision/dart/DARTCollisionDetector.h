@@ -57,6 +57,9 @@ public:
   // Documentation inherited
   virtual bool detectCollision(bool _checkAllCollisions,
                                bool _calculateContactPoints);
+  
+  // Jiaji: Adding this but not implemented (merely for the sake of compiling). 
+  virtual DistancePair computeDistancePair(CollisionNode* _node1, CollisionNode* _node2);
 
 protected:
   // Documentation inherited

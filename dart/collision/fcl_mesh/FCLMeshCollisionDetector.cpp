@@ -141,13 +141,15 @@ bool FCLMeshCollisionDetector::detectCollision(CollisionNode* _node1,
 }
 
 //==========================================================================
-/// Jiaji: Add an interface for distance query between two bodies.
+/// Jiaji: an interface for distance query between two bodies.
 DistancePair FCLMeshCollisionDetector::computeDistancePair(CollisionNode* _node1, CollisionNode* _node2) {
-   FCLMeshCollisionNode* collisionNode1 =
-      static_cast<FCLMeshCollisionNode*>(_node1);
-   FCLMeshCollisionNode* collisionNode2 =
-      static_cast<FCLMeshCollisionNode*>(_node2);
-   return collisionNode1->computeDistancePair(collisionNode2);
+  std::cout << "FCLMeshCollisionDetector::computeDistancePair" << std::endl;
+  FCLMeshCollisionNode* collisionNode1 =
+    static_cast<FCLMeshCollisionNode*>(_node1);
+  FCLMeshCollisionNode* collisionNode2 =
+    static_cast<FCLMeshCollisionNode*>(_node2);
+ 
+  return collisionNode1->computeDistancePair(collisionNode2);
 }
 
 //==============================================================================
