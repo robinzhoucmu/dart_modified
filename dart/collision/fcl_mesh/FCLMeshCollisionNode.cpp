@@ -158,6 +158,7 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
   bool collision = false;
   // Jiaji: Test code for distance computation.
   double min_dist = 1e9;
+  int num_added_contacts = 0;
   // ------
   for (size_t i = 0; i < mMeshes.size(); i++)
   {
@@ -365,8 +366,10 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
 
       for (size_t k = 0; k < unfilteredContactPoints.size(); k++)
       {
-        if (!markForDeletion[k])
+        if (!markForDeletion[k]) {
           _contactPoints->push_back(unfilteredContactPoints[k]);
+	  ++num_added_contacts; 
+	}
       }
     }
   }
@@ -374,6 +377,7 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
   std::cout << getBodyNode()->getSkeleton()->getName() << std::endl;
   std::cout << _otherNode->getBodyNode()->getSkeleton()->getName() << std::endl;
   std::cout << "MinDist: " << min_dist << std::endl;
+  std::cout << "Number of final contacts " << num_added_contacts << std::endl;
   // ------------------
   return collision;
 }

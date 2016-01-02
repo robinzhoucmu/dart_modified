@@ -176,6 +176,8 @@ public:
   /// \brief
   bool isCollidable(const CollisionNode* _node1, const CollisionNode* _node2);
 
+  void clearContacts();
+
 protected:
   /// \brief
   virtual bool detectCollision(CollisionNode* _node1, CollisionNode* _node2,

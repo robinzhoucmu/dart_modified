@@ -364,5 +364,9 @@ CollisionNode* CollisionDetector::getCollisionNode(
     return nullptr;
 }
 
+void CollisionDetector::clearContacts() {
+  mContacts.clear();
+}
+
 }  // namespace collision
 }  // namespace dart

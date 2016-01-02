@@ -134,6 +134,10 @@ bool FCLMeshCollisionDetector::detectCollision(CollisionNode* _node1,
       static_cast<FCLMeshCollisionNode*>(_node1);
   FCLMeshCollisionNode* collisionNode2 =
       static_cast<FCLMeshCollisionNode*>(_node2);
+
+  // Jiaji: Adding these two lines (following detectionCollision all.)
+  collisionNode1->updateShape();
+  collisionNode2->updateShape();
   return collisionNode1->detectCollision(
         collisionNode2,
         _calculateContactPoints ? &mContacts : nullptr,
