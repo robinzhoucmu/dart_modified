@@ -227,11 +227,11 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
 	std::cout << p1 << "|" << p2 << "|" << p3 << std::endl;
 	std::cout << "surface normal " << ((p2 - p1).cross(p3-p1)).normalize() << std::endl;
 	*/
-	std::cout << "NumContactOld " << res.numContacts() << std::endl; 
+	//std::cout << "NumContactOld " << res.numContacts() << std::endl; 
 	int num_contacts = new_col_res.numContacts();
 	if (num_contacts > 0) {
-	  std::cout << "Normal 0 :" << -new_col_res.getContact(0).normal << std::endl;
-	  std::cout << "Normal end :" << -new_col_res.getContact(num_contacts - 1).normal << std::endl;
+	  //std::cout << "Normal 0 :" << -new_col_res.getContact(0).normal << std::endl;
+	  //std::cout << "Normal end :" << -new_col_res.getContact(num_contacts - 1).normal << std::endl;
 	}
 	math::Jacobian J_b = _otherNode->getBodyNode()->getWorldJacobian(pt_b);
 	//std::cout << J_b << std::endl;
@@ -374,10 +374,12 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
     }
   }
   // Jiaji: Dart distance test.
+  /*
   std::cout << getBodyNode()->getSkeleton()->getName() << std::endl;
   std::cout << _otherNode->getBodyNode()->getSkeleton()->getName() << std::endl;
   std::cout << "MinDist: " << min_dist << std::endl;
   std::cout << "Number of final contacts " << num_added_contacts << std::endl;
+  */
   // ------------------
   return collision;
 }
