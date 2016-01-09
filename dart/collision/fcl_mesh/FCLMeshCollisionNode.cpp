@@ -157,7 +157,7 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
   _otherNode->evalRT();
   bool collision = false;
   // Jiaji: Test code for distance computation.
-  double min_dist = 1e9;
+  //double min_dist = 1e9;
   int num_added_contacts = 0;
   // ------
   for (size_t i = 0; i < mMeshes.size(); i++)
@@ -178,6 +178,7 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
                    req, res);
       // ---------------------------------------
       // Jiaji: Test code for distance computation.
+      /*
       fcl::DistanceRequest dis_req;
       dis_req.enable_nearest_points = true;
       fcl::DistanceResult dis_res;
@@ -211,7 +212,7 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
 	// Failed: mesh id is not correct? Multiple mesh problem.
 	// For the wall and floor, it gave me the vertical mesh 
 	// from the wall instead. 
-	/*
+	
 	fcl::BVHModel<fcl::OBBRSS>* _mesh2 = _otherNode->mMeshes[j];
 	const fcl::Transform3f& _transform2 = _otherNode->mFclWorldTrans;
 	int id2 = dis_res.b2;
@@ -226,7 +227,7 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
 	p3 = _transform2.transform(p3);
 	std::cout << p1 << "|" << p2 << "|" << p3 << std::endl;
 	std::cout << "surface normal " << ((p2 - p1).cross(p3-p1)).normalize() << std::endl;
-	*/
+	
 	//std::cout << "NumContactOld " << res.numContacts() << std::endl; 
 	int num_contacts = new_col_res.numContacts();
 	if (num_contacts > 0) {
@@ -237,7 +238,7 @@ bool FCLMeshCollisionNode::detectCollision(FCLMeshCollisionNode* _otherNode,
 	//std::cout << J_b << std::endl;
 	//std::cout << "Linear Jacobian " << std::endl;
 	
-      }
+      }*/
       //--------
       if (res.isCollision())
         collision = true;
